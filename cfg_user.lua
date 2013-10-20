@@ -7,30 +7,28 @@ function get_hostname()
 end
 
 defbindings("WMPlex", {
-	       kpress("Mod4+r", "ioncore.exec_on(_, 'urxvtcd -e screen -dRR main')"),
+	       kpress("Mod4+r", "ioncore.exec_on(_, 'exec urxvtcd -e screen -dRR main')"),
                kpress("Mod4+Mod1+r", 
-                      "ioncore.exec_on(_, 'urxvtcd -e ssh -tX slack LANG=ru_RU.UTF-8 screen -dRR')"),
-	       kpress("Mod4+e", "ioncore.exec_on(_, 'emacs')"),
-	       kpress("Mod4+f", "ioncore.exec_on(_, 'firefox')"),
-	       kpress("Mod4+o", "ioncore.exec_on(_, 'opera')"),
-               kpress("Mod4+c", "ioncore.exec_on(_, 'chrome')"),
-	       kpress("Mod4+d", "ioncore.exec_on(_, 'okular')"),
+                      "ioncore.exec_on(_, 'exec urxvtcd -e ssh -tX desktop screen -xRR main')"),
+	       kpress("Mod4+e", "ioncore.exec_on(_, 'exec emacs')"),
+	       kpress("Mod4+f", "ioncore.exec_on(_, 'exec iceweasel')"),
+	       kpress("Mod4+o", "ioncore.exec_on(_, 'exec opera')"),
+               kpress("Mod4+c", "ioncore.exec_on(_, 'exec chrome')"),
+	       kpress("Mod4+d", "ioncore.exec_on(_, 'exec okular')"),
 
 	       kpress("Mod4+z", "dict_lookup(_)"),
 
                kpress("Print", "ioncore.exec('sleep 0.1;  xset dpms force off')"),
-               kpress("Scroll_Lock", "toggle_display(_)"),
-               kpress("Control+F4", "ioncore.exec('susp')"),
                kpress("Mod4+F2", "repl(_)"),
                kpress("Mod4+F5", "start_all(_)"),
                -- kpress("XF86WWW", "show_weather()")
 	    })
 
 function start_all(ws)
-   ioncore.exec_on(ws, 'emacs')
-   ioncore.exec_on(ws, 'opera')
-   ioncore.exec_on(ws, 'gnus')
-   ioncore.exec_on(ws, 'urxvtcd -e screen -dRR main')
+   ioncore.exec_on(ws, 'exec emacs')
+   ioncore.exec_on(ws, 'exec browser')
+   ioncore.exec_on(ws, 'exec gnus')
+   ioncore.exec_on(ws, 'exec urxvtcd -e screen -dRR main')
 end
 
 function dict_lookup (ws)
@@ -108,47 +106,13 @@ function repl(ws)
 end
 
 
-function move_scratch(x, y, w, h)
-   ioncore.lookup_region("*scratchpad*"):rqgeom({x=x, y=y, w=w, h=h})
-end
+-- function move_scratch(x, y, w, h)
+--    ioncore.lookup_region("*scratchpad*"):rqgeom({x=x, y=y, w=w, h=h})
+-- end
 
-function get_resolution()
-   local out = io.popen("xrandr")
-   local line = out:read()
-   
-   while line do
-      local b, e, w, h = string.find(line, "current (%d+) x (%d+)")
 
-      if w and h then
-         return tonumber(w), tonumber(h)
-      end
+-- function resize_scratch()
+--    move_scratch(300, 160, 1361, 744)
+-- end
 
-      line = out:read()
-   end
-end
-
-function toggle_display(ws)
-   local w = get_resolution()
-   local status
-
-   if w == 3840 then
-      status = os.execute("disper -d DFP-1 -e")
-   else
-      status = os.execute("disper -d DFP-2,DFP-0 -e")
-   end
-   
-   if status == 0 then
-      move_scratch(0,0,1361,744)
-      ioncore.restart()
-   end
-end
-
-function resize_scratch()
-   if get_resolution() == 3840 then
-      move_scratch(2200, 160, 1361, 744)
-   else
-      move_scratch(300, 160, 1361, 744)
-   end
-end
-
-ioncore.get_hook("ioncore_post_layout_setup_hook"):add(resize_scratch)
+-- ioncore.get_hook("ioncore_post_layout_setup_hook"):add(resize_scratch)

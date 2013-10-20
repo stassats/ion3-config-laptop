@@ -4,12 +4,26 @@ defbindings("WMPlex", {
 
 	       kpress("Mod4+period", "mpd_command('next', mpd_status)"),
 	       kpress("Mod4+comma", "mpd_command('prev', mpd_status)"),
-
+               
                kpress("XF86AudioLowerVolume", "change_volume(-5)"),
 	       kpress("XF86AudioRaiseVolume", "change_volume(5)"),
 
-               kpress("XF86AudioPrev", "inform_mpd(mpd_status())"),
+               kpress("XF86Favorites", "inform_mpd(mpd_status())"),
+               kpress("XF86Forward", "mpd_command('volume +5')"),
+	       kpress("XF86Back", "mpd_command('volume -5')"),
+               kpress("XF86Battery", "inform_command('acpi')"),
             })
+
+function inform_command(command)
+   local out = io.popen(command)
+   local text
+   if out == nil then
+      text =  "Error"
+   else
+      text = out:read()
+   end
+   inform_mpd(text)
+end
 
 function mpd_status(command)
    local mpd = io.popen("mpc --format '[%track%) %artist% - %title% (%album%; %date%)]|[%file%]' " ..
@@ -100,13 +114,13 @@ function read_volume(out)
    out:read()
    local values = out:read()
    out:close()
-   local b, e = values:find("%d+,")
+   local b, e = values:find("%d+")
 
-   return tonumber(values:sub(b, e - 1))
+   return tonumber(values:sub(b, e))
 end
 
 function get_volume()
-   return read_volume(io.popen("amixer cget name='PCM Playback Volume'"))
+   return read_volume(io.popen("amixer cget name='Master Playback Volume'"))
 end
 
 function change_volume(amount)
@@ -119,5 +133,5 @@ function change_volume(amount)
    
    inform_mpd(string.format("Volume: %d%%",
               read_volume(
-                 io.popen("amixer cset name='PCM Playback Volume' " .. volume))))
+                 io.popen("amixer cset name='Master Playback Volume' " .. volume))))
 end

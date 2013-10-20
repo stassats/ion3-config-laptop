@@ -42,13 +42,18 @@ defwinprop{
    target = "browser",
 }
 defwinprop{
+   class = "OperaNext",
+   instance = "opera",
+   target = "browser",
+}
+defwinprop{
    class = "Chrome",
    target = "browser",
 }
 defwinprop{
    class = "Emacs",
    instance = "emacs",
-   target = "emacs-main",
+   target = "emacs",
 }
 
 defwinprop{
@@ -82,8 +87,3 @@ defwinprop{
 --    class = "Okular",
 --    target = "5",
 -- }
-
-defwinprop{
-   class = "Xpdf",
-   target = "5",
-}
